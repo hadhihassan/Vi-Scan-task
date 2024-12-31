@@ -1,6 +1,5 @@
 import { generateJwtToken } from "../lib/jwt.js";
 import bcrypt from "bcryptjs";
-import cloudinary from "../lib/cloudinary.js";
 import { prisma } from "../lib/db.js";
 
 export const signup = async (req, res) => {
@@ -53,10 +52,10 @@ export const login = async (req, res) => {
         })
     }
 
-    generateJwtToken(user._id);
+    generateJwtToken(user._id, res);
 
     res.status(200).json({
-        name  :user.name,
+        name: user.name,
         email: user.email,
     })
 }
@@ -68,31 +67,6 @@ export const logout = (req, res) => {
     })
 }
 
-export const updateProfile = async (req, res) => {
-
-    const { profilePic } = req.body;
-    const userId = req.user._id
-
-    if (!profilePic) {
-        return res.status(400).json({
-            message: "Profile pic is required."
-        });
-    }
-
-    const uploadResponse = await cloudinary.uploader.upload(profilePic);
-    const updatedUser = await prisma.user.update({
-        where: { id: userId },
-        data: {
-            profilePic: uploadResponse.secure_url
-        }
-    })
-
-    res.status(200).json(updatedUser)
-
-}
-
-export const checkAuth = async () => {
-
+export const checkAuth = async (req, res) => {
     res.status(200).json(req.user)
-
 }

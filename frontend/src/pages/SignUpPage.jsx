@@ -3,9 +3,15 @@ import { useTheme } from '@mui/material/styles';
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
+import { siginUp } from '../services/authService';
+
 
 function SignUpPage() {
+
     const theme = useTheme();
+    const navigate = useNavigate()
 
     const validationSchema = yup.object({
         name: yup.string().required('Name is required'),
@@ -28,17 +34,22 @@ function SignUpPage() {
     });
 
     const handleSignup = async (values, { setSubmitting }) => {
-        console.log('Sign-up data:', values);
+        try {
 
-        const promise = new Promise((resolve) => {
-            setTimeout(() => {
-                alert('Sign-up successful!');
-                resolve();
-                setSubmitting(false);
-            }, 300);
-        });
+            delete values.confirmPassword;
 
-        await promise;
+            await siginUp(values)
+
+            toast.success('Sign-up successful!');
+            navigate("/login")
+        } catch (error) {
+            if (error.response.data.errors) {
+                toast.error(error?.response?.data?.errors[0]?.msg)
+            } else {
+                toast.error(error?.response?.data?.message)
+            }
+        }
+        setSubmitting(false);
     };
 
     return (
@@ -80,7 +91,7 @@ function SignUpPage() {
                                 fullWidth
                                 margin="normal"
                                 size="small"
-                                helperText={<ErrorMessage name="name"/>}
+                                helperText={<ErrorMessage name="name" />}
                             />
                             <Field
                                 as={TextField}

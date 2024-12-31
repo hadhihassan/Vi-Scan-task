@@ -3,11 +3,18 @@ import { useTheme } from '@mui/material/styles';
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
+import { login } from '../services/authService';
+import { useContext } from 'react';
+import { AuthContext } from '../Context/AuthContext';
 
 
 function LoginPage() {
 
   const theme = useTheme();
+  const navigate = useNavigate()
+  const { updateAuthenticity } = useContext(AuthContext);
 
   const validationSchema = yup.object({
     email: yup
@@ -20,17 +27,21 @@ function LoginPage() {
   });
 
   const handleLoginin = async (values, { setSubmitting }) => {
-    console.log('Sign-up data:', values);
+    try {
+      await login(values)
+      updateAuthenticity()
+      toast.success('Sign-in successful!');
+      navigate("/")
 
-    const promise = new Promise((resolve) => {
-      setTimeout(() => {
-        alert('Sign-up successful!');
-        resolve();
-        setSubmitting(false);
-      }, 300);
-    });
+    } catch (error) {
+      if (error.response.data.errors) {
+        toast.error(error?.response?.data?.errors[0]?.msg)
+      } else {
+        toast.error(error?.response?.data?.message)
+      }
+    }
 
-    await promise;
+    setSubmitting(false);
   };
 
   return (
@@ -55,10 +66,8 @@ function LoginPage() {
         </Typography>
         <Formik
           initialValues={{
-            name: '',
             email: '',
             password: '',
-            confirmPassword: '',
           }}
           validationSchema={validationSchema}
           onSubmit={handleLoginin}
@@ -97,8 +106,12 @@ function LoginPage() {
               >
                 {isSubmitting ? 'Signing In...' : 'Sign In'}
               </Button>
+              <Typography variant="subtitle2" align="center" margin={1} color="gray" gutterBottom>
+
+              </Typography>
             </Form>
           )}
+
         </Formik>
       </Box>
     </AppProvider>

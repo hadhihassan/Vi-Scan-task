@@ -11,12 +11,18 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { Button } from '@mui/material';
+import { AuthContext } from '../Context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const settings = ['Profile', 'Logout'];
 
 function NavBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+    const { authUser, logoutUser } = React.useContext(AuthContext);
+    const navigate = useNavigate()
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -33,6 +39,17 @@ function NavBar() {
         setAnchorElUser(null);
     };
 
+    const handleMenuItemClick = (setting) => {
+        if (setting === 'Logout') {
+            logoutUser();
+            navigate('/login');
+        } else if (setting === 'Profile') {
+            navigate('/profile'); // Navigate to the profile page
+        }
+        handleCloseUserMenu();
+    };
+
+
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
@@ -41,7 +58,7 @@ function NavBar() {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -52,7 +69,7 @@ function NavBar() {
                             textDecoration: 'none',
                         }}
                     >
-                        Bloging App
+                        Blogging App
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -82,14 +99,20 @@ function NavBar() {
                             onClose={handleCloseNavMenu}
                             sx={{ display: { xs: 'block', md: 'none' } }}
                         >
+                            {!authUser && (
+                                <MenuItem>
+                                    <Button onClick={() => navigate('/login')}>Login</Button>
+                                </MenuItem>
+                            )}
                         </Menu>
                     </Box>
+
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
                     <Typography
                         variant="h5"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -101,16 +124,25 @@ function NavBar() {
                             textDecoration: 'none',
                         }}
                     >
-                        Bloging App
+                        Blogging App
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end' }}>
+                        {!authUser && (
+                            <Typography onClick={() => navigate('/login')} sx={{ cursor: 'pointer' }}>
+                                Login
+                            </Typography>
+                        )}
                     </Box>
+
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
+                        {authUser && (
+                            <Tooltip title="Open settings">
+                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                    <Avatar alt={authUser.name} src={authUser.profilePic} />
+                                </IconButton>
+                            </Tooltip>
+                        )}
                         <Menu
                             sx={{ mt: '45px' }}
                             id="menu-appbar"
@@ -128,8 +160,8 @@ function NavBar() {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                                <MenuItem key={setting} onClick={() => handleMenuItemClick(setting)}>
+                                    <Typography textAlign="center">{setting}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -137,7 +169,6 @@ function NavBar() {
                 </Toolbar>
             </Container>
         </AppBar>
-        
     );
 }
 export default NavBar;
