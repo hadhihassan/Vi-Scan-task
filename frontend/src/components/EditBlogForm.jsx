@@ -11,12 +11,14 @@ import * as yup from 'yup';
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import TextField from "@mui/material/TextField";
-import { createBlog } from '../services/blogService';
+import { updateBlog } from '../services/blogService';
 import toast from 'react-hot-toast'
 
 
-export default function FormDialog({ update }) {
+export default function EditBlogForm({ update, data }) {
+
     const [open, setOpen] = React.useState(false);
+    const [defaultData, setDefaultData] = React.useState(null);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -32,79 +34,74 @@ export default function FormDialog({ update }) {
             .required('Title is required'),
         file: yup
             .mixed()
-            .required('File is required')
-            .test(
-                "fileSize",
-                "File size is too large. Maximum 2MB allowed.",
-                (value) => value && value.size <= 2 * 1024 * 1024 // 2MB
-            )
-            .test(
-                "fileType",
-                "Unsupported file type. Only .jpg, .png",
-                (value) =>
-                    value &&
-                    ["image/jpeg", "image/png", "application/pdf"].includes(value.type)
-            ),
     });
 
     const handleSubmit = async (values, { setSubmitting }) => {
 
-        const file = values.file;
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
+        let base64Image
+        if (typeof values.file !== "string") {
+            base64Image = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(values.file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            });
+        }
+        try {
+            const loadingToastId = toast.loading("Updating blog, please wait...");
 
-        reader.onload = async () => {
-            try {
-                const base64Image = reader.result;
-                const loadingToastId = toast.loading("Creating blog, please wait...");
+            await updateBlog(data?.id, {
+                poster: base64Image,
+                content: values.content,
+                title: values.title
+            });
 
-                await createBlog({
-                    poster: base64Image,
-                    content: values.content,
-                    title: values.title
-                });
+            toast.dismiss(loadingToastId);
+            toast.success("Blog updating successfully!");
 
-                toast.dismiss(loadingToastId);
-                toast.success("Blog created successfully!");
-
-                update();
-            } catch (error) {
-                toast.dismiss();
-                if (error.response?.data?.errors) {
-                    toast.error(error.response.data.errors[0]?.msg);
-                } else {
-                    toast.error(error.response?.data?.message || "An error occurred");
-                }
+            update();
+        } catch (error) {
+            toast.dismiss();
+            if (error.response?.data?.errors) {
+                toast.error(error.response.data.errors[0]?.msg);
+            } else {
+                toast.error(error.response?.data?.message || "Somthing went wrong please try again.");
             }
-        };
-
+        }
         setSubmitting(false);
         handleClose();
     };
+
+    React.useEffect(() => {
+        setDefaultData(data)
+    }, [])
 
     return (
         <React.Fragment>
             <Button
                 variant="contained"
-                fullWidth
+                sx={{ flex: 1 }}
+                size="small"
+                color="red"
                 onClick={handleClickOpen}
             >
-                New Blog
+                Edit
             </Button>
             <Dialog
                 open={open}
                 onClose={handleClose}
             >
-                <DialogTitle>Add New Blogs</DialogTitle>
+                <DialogTitle>Edit Blog</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        To add new blogs here.
+                        Edit your  blog content is here
                     </DialogContentText>
                     <Formik
+                        enableReinitialize:true
                         initialValues={{
-                            title: '',
-                            content: '',
-                            file: null,
+                            title: defaultData?.title,
+                            content: defaultData?.content,
+                            file: defaultData?.poster,
                         }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
@@ -118,10 +115,12 @@ export default function FormDialog({ update }) {
                                     fullWidth
                                     margin="normal"
                                     size="small"
+
                                     helperText={<ErrorMessage name="title" />}
                                 />
                                 <ReactQuill
                                     theme="snow"
+                                    defaultValue={defaultData.content}
                                     onChange={(content) => setFieldValue("content", content)}
                                     placeholder="Write your content here..."
                                     style={{ marginTop: '16px', marginBottom: '8px' }}
@@ -135,7 +134,7 @@ export default function FormDialog({ update }) {
                                     }
                                     style={{ marginTop: '16px', marginBottom: '8px' }}
                                 />
-                                <ErrorMessage name="file" component="p"   style={{ color: 'gray', marginBottom: '1px' }} />
+                                <ErrorMessage name="file" component="div" style={{ color: 'red', marginBottom: '8px' }} />
                                 <DialogActions>
                                     <Button
                                         type="submit"

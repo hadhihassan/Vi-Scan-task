@@ -23,3 +23,15 @@ export const registerSchema = [
 export const verificationSchema = [
     body("code").isLength({ min: 6, max: 6 }).isNumeric(),
 ];
+
+export const profileSchema = [
+    body('name')
+        .trim()
+        .notEmpty().withMessage('Name is required')
+        .isLength({ min: 3 }).withMessage('Name must be at least 3 characters long'),
+
+    body('email')
+        .isEmail().withMessage('Invalid email format')
+        .normalizeEmail(),
+
+]

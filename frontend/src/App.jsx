@@ -10,10 +10,20 @@ import { AuthContext } from "./Context/AuthContext";
 // import NavBar from "../pages/ProfilePage";
 // import NavBar from "../pages/ViewPage";
 import { Toaster } from 'react-hot-toast';
+import { createTheme } from "@mui/material";
+import { ThemeProvider } from "@emotion/react";
 
 
 
 export default function App() {
+
+  const theme = createTheme({
+    typography: {
+      button: {
+        textTransform: 'none',
+      },
+    },
+  });
 
   const { authUser, updateAuthenticity } = React.useContext(AuthContext);
   React.useEffect(() => {
@@ -21,6 +31,7 @@ export default function App() {
   }, [])
 
   return (<div>
+    <ThemeProvider theme={theme}>
       <Toaster
         position="bottom-right"
         reverseOrder={false}
@@ -36,7 +47,8 @@ export default function App() {
         <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
         <Route path="*" element={<div>404</div>} />
       </Routes>
-    </div>
+    </ThemeProvider>
+  </div>
 
   );
 }

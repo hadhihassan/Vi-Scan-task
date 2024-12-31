@@ -1,22 +1,23 @@
+/* eslint-disable no-unused-vars */
 import { useContext, useEffect, useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-import { Box, Stack, Typography, Pagination, TextField, Button } from '@mui/material';
+import { Box, Stack, Typography, Button } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CardActionArea from '@mui/material/CardActionArea';
-// import { useNavigate } from 'react-router-dom';
-import NestedModal from '../components/BlogAddModal';
-import { getMyBlogs } from '../services/blogService';
+import { deleteBlog, getMyBlogs } from '../services/blogService';
 import DisplayQuillContent from '../components/DisplayQuillContent';
 import toast from 'react-hot-toast';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import { AuthContext } from '../Context/AuthContext';
-
+import EditBlogForm from '../components/EditBlogForm';
+import UpdateProfileForm from '../components/UpdateProfileForm';
+import { useNavigate } from 'react-router-dom';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -36,7 +37,9 @@ function ProfilePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { authUser } = useContext(AuthContext);
+  const [src, setSrc] = useState(authUser.profilePic);
 
+  const navigate= useNavigate()
 
   const handleFetchBlogs = async (page = 1) => {
     try {
@@ -45,7 +48,6 @@ function ProfilePage() {
       setBlogs(response.blogs);
       setTotalPages(response.totalPages);
 
-      toast.success("Blogs fetched successfully!");
     } catch (error) {
       if (error.response?.data?.errors) {
         toast.error(error.response.data.errors[0]?.msg);
@@ -55,14 +57,24 @@ function ProfilePage() {
     }
   };
 
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-    handleFetchBlogs(value);
-  };
+  // const handlePageChange = (event, value) => {
+  //   setCurrentPage(value);
+  //   handleFetchBlogs(value);
+  // };
 
   useEffect(() => {
     handleFetchBlogs(currentPage);
   }, [currentPage]);
+
+  const hadleDeleteBlog = async (id) => {
+    try {
+      const response = await deleteBlog(id)
+      toast.success(response?.message)
+      handleFetchBlogs(currentPage);
+    } catch (error) {
+      toast.error(error?.response?.data?.message)
+    }
+  }
 
   return (<>
     <CssBaseline />
@@ -72,9 +84,15 @@ function ProfilePage() {
           <Item sx={{ gap: "10px" }}>
             <Stack direction="row" spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
               <Avatar
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "gray",
+                    cursor: "pointer"
+                  },
+                  width: 200, height: 200
+                }}
                 alt={authUser.name}
                 src={authUser.profilePic}
-                sx={{ width: 200, height: 200 }}
               />
             </Stack>
             <Box component="section" sx={{ p: 2, textAlign: "center" }}>
@@ -87,7 +105,7 @@ function ProfilePage() {
               <Typography textAlign="center" variant='subtitle2'>
                 Total Post:{blogs?.length}
               </Typography>
-              <Button variant='contained' fullWidth >Edit</Button>
+              <UpdateProfileForm  userData={authUser}/>
             </Box>
           </Item>
         </Grid>
@@ -96,7 +114,7 @@ function ProfilePage() {
             {blogs?.map((blog, index) => (
               <Grid key={index} size={{ xs: 2, sm: 4, md: 4 }}>
                 <Card sx={{ minHeight: 350, maxWidth: 500, maxHeight: 400 }}>
-                  <CardActionArea>
+                  <CardActionArea onClick={()=>navigate(`/blog/${blog.id}`)}>
                     <CardMedia
                       component="img"
                       height="140"
@@ -112,18 +130,12 @@ function ProfilePage() {
                   </CardActionArea>
                 </Card>
                 <Box display="flex" gap={2} sx={{ padding: "5px", marginTop: "10px" }}>
+                  <EditBlogForm update={handleFetchBlogs} data={blog} />
                   <Button
                     variant="contained"
                     sx={{ flex: 1 }}
                     size="small"
-                    color="red"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="contained"
-                    sx={{ flex: 1 }}
-                    size="small"
+                    onClick={() => hadleDeleteBlog(blog.id)}
                   >
                     Delete
                   </Button>

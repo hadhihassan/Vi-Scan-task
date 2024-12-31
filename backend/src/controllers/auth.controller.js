@@ -20,7 +20,7 @@ export const signup = async (req, res) => {
     });
 
     if (newUser) {
-        generateJwtToken(newUser._id, res);
+        generateJwtToken(newUser.id, res);
 
         res.status(201).json({
             name,
@@ -35,8 +35,8 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
 
-    const user = await prisma.user.findFirst({
-        where: { email }
+    const user = await prisma.user.findUnique({
+        where: { email : email }
     })
 
     if (!user) {
@@ -51,8 +51,8 @@ export const login = async (req, res) => {
             message: "Invalid Credentials"
         })
     }
-
-    generateJwtToken(user._id, res);
+    console.log(user," this is the user ================")
+    generateJwtToken(user.id, res);
 
     res.status(200).json({
         name: user.name,

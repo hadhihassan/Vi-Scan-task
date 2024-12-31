@@ -9,6 +9,7 @@ import { connectToDatabase } from './lib/db.js';
 import { corsOptions } from './utils/corsConfig.js';
 import authRoutes from './routes/auth.routes.js';
 import blogRoutes from './routes/blog.routes.js';
+import profileRoutes from './routes/profile.routes.js';
 import { errorHandler } from './middleware/errorHandler.middleware.js';
 
 dotenv.config()
@@ -23,6 +24,7 @@ app.use(morgan("dev"))
 
 app.use('/api/auth', authRoutes)
 app.use('/api/blog', blogRoutes)
+app.use('/api/profile', profileRoutes)
 
 app.use(errorHandler);
 

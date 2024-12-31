@@ -20,8 +20,8 @@ export const protectRoute = async (req, res, next) => {
                 message: "Unauthorized user Access. No token provided."
             })
         }
-
-        const user = await prisma.user.findFirst({
+        
+        const user = await prisma.user.findUnique({
                 where: {
                     id: decoded.userId
                 }

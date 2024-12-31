@@ -7,14 +7,14 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CardActionArea from '@mui/material/CardActionArea';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import NestedModal from '../components/BlogAddModal';
 import { getAllBlogs } from '../services/blogService';
 import DisplayQuillContent from '../components/DisplayQuillContent';
 import toast from 'react-hot-toast';
 
 function BlogListPage() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [blogs, setBlogs] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -24,7 +24,6 @@ function BlogListPage() {
       const response = await getAllBlogs(page, 10); 
       setBlogs(response.blogs);
       setTotalPages(response.totalPages);
-      toast.success("Blogs fetched successfully!");
     } catch (error) {
       if (error.response?.data?.errors) {
         toast.error(error.response.data.errors[0]?.msg);
@@ -68,8 +67,8 @@ function BlogListPage() {
         <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           {blogs?.map((blog, index) => (
             <Grid key={index} size={{ xs: 12, sm: 4, md: 3 }}>
-              <Card sx={{ minHeight: 350, maxWidth: 500, maxHeight: 400 }}>
-                <CardActionArea>
+              <Card sx={{ minHeight: 350, maxWidth: 500, maxHeight: 400 }} >
+                <CardActionArea onClick={()=>navigate(`blog/${blog.id}`)}>
                   <CardMedia
                     component="img"
                     height="140"

@@ -1,7 +1,7 @@
 import express from 'express';
 import { blogSchema } from '../dtos/blog.dto.js';
 import { validateHandler } from '../middleware/validation.middleware.js';
-import { createNewBlog, getAllBlogs, getMyBlogs } from '../controllers/blog.controller.js';
+import { createNewBlog, getAllBlogs, getMyBlogs, editBlog, deleteBlog, updatePoster,getBlog } from '../controllers/blog.controller.js';
 import { protectRoute } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
@@ -20,18 +20,23 @@ router.post(
 router.put(
     "/:id",
     (req, res, next) => {
-
+        editBlog(req, res, next)
+    }
+);
+//  Update Blog poster
+router.patch(
+    "/:id",
+    (req, res, next) => {
+        updatePoster(req, res, next)
     }
 );
 //  Delete blogs
 router.delete(
     "/:id",
     (req, res, next) => {
-
+        deleteBlog(req, res, next)
     }
 );
-
-
 router.get(
     "/my-blogs",
     protectRoute,
@@ -40,10 +45,16 @@ router.get(
     }
 );
 router.get(
-    "/", // This handles `/api/blog?page=1&limit=10`
+    "/",
     protectRoute,
     (req, res, next) => {
         getAllBlogs(req, res, next);
+    }
+);
+router.get(
+    "/:id",
+    (req, res, next) => {
+        getBlog(req, res, next);
     }
 );
 
