@@ -20,7 +20,6 @@ router.post(
     registerSchema,
     validateHandler,
     (req, res, next) => {
-        console.log("here")
         signup(req, res, next);
     }
 );

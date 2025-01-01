@@ -5,7 +5,6 @@ import { checkAuth, logout } from '../services/authService';
 
 export const AuthContext = createContext();
 
-// Create a provider component
 export const AuthProvider = ({ children }) => {
 
     const [authUser, setAuthUser] = useState(null);

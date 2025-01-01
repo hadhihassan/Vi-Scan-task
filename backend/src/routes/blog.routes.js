@@ -19,6 +19,7 @@ router.post(
 // update blog 
 router.put(
     "/:id",
+    protectRoute,
     (req, res, next) => {
         editBlog(req, res, next)
     }
@@ -26,6 +27,7 @@ router.put(
 //  Update Blog poster
 router.patch(
     "/:id",
+    protectRoute,
     (req, res, next) => {
         updatePoster(req, res, next)
     }
@@ -33,6 +35,7 @@ router.patch(
 //  Delete blogs
 router.delete(
     "/:id",
+    protectRoute,
     (req, res, next) => {
         deleteBlog(req, res, next)
     }
@@ -46,7 +49,6 @@ router.get(
 );
 router.get(
     "/",
-    protectRoute,
     (req, res, next) => {
         getAllBlogs(req, res, next);
     }

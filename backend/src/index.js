@@ -20,14 +20,13 @@ const app = express()
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
-app.use(morgan("dev"))
 
 app.use('/api/auth', authRoutes)
 app.use('/api/blog', blogRoutes)
 app.use('/api/profile', profileRoutes)
 
 app.use(errorHandler);
-console.log(process.env.DATABASE_URL)
+
 app.listen(PORT, () => {
     console.log("Server is runing on", PORT);
     connectToDatabase()

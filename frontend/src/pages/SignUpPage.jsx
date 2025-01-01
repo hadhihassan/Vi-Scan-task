@@ -4,7 +4,7 @@ import { Box, TextField, Button, Typography } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import toast from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { siginUp } from '../services/authService';
 
 
@@ -133,6 +133,12 @@ function SignUpPage() {
                             >
                                 {isSubmitting ? 'Signing Up...' : 'Sign Up'}
                             </Button>
+                            <Typography variant="subtitle2" align="center" margin={1} color="gray" gutterBottom>
+                                Already have accound .
+                                <Link to={'/login'}>
+                                    Sign In?
+                                </Link>
+                            </Typography>
                         </Form>
                     )}
                 </Formik>

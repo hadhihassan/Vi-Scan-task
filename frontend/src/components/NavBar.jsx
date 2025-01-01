@@ -44,7 +44,7 @@ function NavBar() {
             logoutUser();
             navigate('/login');
         } else if (setting === 'Profile') {
-            navigate('/profile'); // Navigate to the profile page
+            navigate('/profile'); 
         }
         handleCloseUserMenu();
     };
@@ -56,9 +56,8 @@ function NavBar() {
                 <Toolbar disableGutters>
                     <Typography
                         variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
+                        component="p"
+                        onClick={()=>navigate('/')}
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -67,6 +66,9 @@ function NavBar() {
                             letterSpacing: '.3rem',
                             color: 'inherit',
                             textDecoration: 'none',
+                            '&:hover':{
+                                cursor:'pointer'
+                            }
                         }}
                     >
                         Blogging App
@@ -111,8 +113,8 @@ function NavBar() {
                     <Typography
                         variant="h5"
                         noWrap
-                        component="a"
-                        href="/"
+                        component="p"
+                        onClick={()=>navigate('/')}
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -122,6 +124,9 @@ function NavBar() {
                             letterSpacing: '.3rem',
                             color: 'inherit',
                             textDecoration: 'none',
+                            '&:hover':{
+                                cursor:'pointer'
+                            }
                         }}
                     >
                         Blogging App
