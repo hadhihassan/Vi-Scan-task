@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useContext, useEffect, useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-import { Box, Stack, Typography, Pagination } from '@mui/material';
+import { Box, Stack, Typography, Pagination, Skeleton } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -11,25 +12,27 @@ import { useNavigate } from 'react-router-dom';
 import NestedModal from '../components/BlogAddModal';
 import { getAllBlogs } from '../services/blogService';
 import DisplayQuillContent from '../components/DisplayQuillContent';
-import toast from 'react-hot-toast';
+import { AuthContext } from '../Context/AuthContext';
 
 function BlogListPage() {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const { authUser } = useContext(AuthContext);
 
   const handleFetchBlogs = async (page = 1) => {
+    setLoading(false)
     try {
       const response = await getAllBlogs(page, 10);
       setBlogs(response.blogs);
       setTotalPages(response.totalPages);
     } catch (error) {
-      if (error.response?.data?.errors) {
-        toast.error(error.response.data.errors[0]?.msg);
-      } else {
-        toast.error(error.response?.data?.message || "An error occurred.");
-      }
+      setLoading(true)
+    }finally{
+      setLoading(true)
     }
   };
 
@@ -61,10 +64,22 @@ function BlogListPage() {
             direction="column-reverse"
             sx={{ display: 'flex', justifyContent: "center", alignContent: "center" }}
           >
-            <NestedModal update={handleFetchBlogs} />
+            {
+              authUser && <NestedModal update={handleFetchBlogs} />
+            }
           </Stack>
         </Box>
         <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+          {!loading && (Array.from(new Array(10))).map((item, index) => (
+            <Box key={index} sx={{ minHeight: 350, maxWidth: 500, maxHeight: 500 }}>
+              <Skeleton variant="rectangular" width={350} height={200} />
+              <Box sx={{ pt: 0.5 }}>
+                <Skeleton />
+                <Skeleton width="60%" />
+              </Box>
+            </Box>
+          ))
+          }
           {
             !blogs ? <div>Not Post</div> : blogs?.map((blog, index) => (
               <Grid key={index} size={{ xs: 12, sm: 4, md: 3 }}>

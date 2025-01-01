@@ -32,7 +32,6 @@ const UpdateProfileForm = ({ userData }) => {
         name: yup
             .string()
             .required('Name is required'),
-
         file: yup
             .mixed()
             .required('File is required')
@@ -155,6 +154,7 @@ const UpdateProfileForm = ({ userData }) => {
                                 <input
                                     type="file"
                                     name="file"
+                                    accept=".png, .jpg, .jpeg"
                                     onChange={(event) => {
                                         const file = event.currentTarget.files[0];
                                         setFieldValue("file", file);

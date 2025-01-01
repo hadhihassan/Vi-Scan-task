@@ -15,11 +15,6 @@ export const getMyBlogs = async (page, limit) => {
     return response.data;
 };
 
-export const updatePoster = async (id, profilePic) => {
-    const response = await axiosInstance.patch(`/blog/${id}`, { profilePic });
-    return response.data;
-};
-
 export const deleteBlog = async (id) => {
     const response = await axiosInstance.delete(`/blog/${id}`);
     return response.data;

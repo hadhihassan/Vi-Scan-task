@@ -1,0 +1,417 @@
+openapi: 3.0.0
+info:
+  title: Authentication API
+  description: This API provides authentication operations such as login, logout, signup, and checking authentication status.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Local Development Server
+
+paths:
+  /auth/login:
+    post:
+      summary: Login to the application
+      description: Authenticates the user and returns a JWT token if the login is successful.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: User's email address.
+                  example: "user@example.com"
+                password:
+                  type: string
+                  description: User's password.
+                  example: "password123"
+      responses:
+        200:
+          description: Successfully logged in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token returned after successful login.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  message:
+                    type: string
+                    example: "Successful login."
+                  success:
+                    type: boolean
+                    example: true
+        400:
+          description: Bad request, invalid credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid credentials."
+                  success:
+                    type: boolean
+                    example: false
+        401:
+          description: Unauthorized, invalid email or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized, invalid credentials."
+                  success:
+                    type: boolean
+                    example: false
+
+  /auth/logout:
+    post:
+      summary: Logout of the application
+      description: Logs out the user by invalidating their JWT token.
+      responses:
+        200:
+          description: Successfully logged out.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Successfully logged out."
+                  success:
+                    type: boolean
+                    example: true
+        401:
+          description: Unauthorized, no valid token provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No valid token provided."
+                  success:
+                    type: boolean
+                    example: false
+
+  /auth/signup:
+    post:
+      summary: Sign up a new user
+      description: Registers a new user in the application with email and password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the user.
+                  example: "John Doe"
+                email:
+                  type: string
+                  description: The email of the user.
+                  example: "johndoe@example.com"
+                password:
+                  type: string
+                  description: The password for the user.
+                  example: "password123"
+      responses:
+        201:
+          description: Successfully signed up.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User created successfully."
+                  success:
+                    type: boolean
+                    example: true
+        400:
+          description: Bad request, invalid input data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input data."
+                  success:
+                    type: boolean
+                    example: false
+        409:
+          description: Conflict, user already exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User already exists."
+                  success:
+                    type: boolean
+                    example: false
+
+  /blog/{id}:
+    get:
+      summary: Get a specific blog by ID
+      description: Retrieves a blog by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the blog to fetch.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Successfully fetched the blog.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the blog.
+                    example: 1
+                  title:
+                    type: string
+                    description: The title of the blog.
+                    example: "JS vs JS"
+                  content:
+                    type: string
+                    description: The content of the blog.
+                    example: "JavaScript is a versatile language."
+                  message:
+                    type: string
+                    example: "Blog retrieved successfully."
+                  success:
+                    type: boolean
+                    example: true
+        404:
+          description: Blog not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Blog not found."
+                  success:
+                    type: boolean
+                    example: false
+
+    /blog/{id}:
+    put:
+      summary: Edit an existing blog
+      description: Updates the title, content, and poster of an existing blog.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the blog to update.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the blog.
+                  example: "Updated JS vs JS"
+                content:
+                  type: string
+                  description: The content of the blog.
+                  example: "Updated content for the blog."
+                poster:
+                  type: string
+                  format: uri
+                  description: The URL or base64 encoded image for the blog's poster.
+                  example: "http://example.com/updated-image.jpg"
+      responses:
+        200:
+          description: Successfully updated the blog.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Blog updated successfully."
+                  success:
+                    type: boolean
+                    example: true
+        400:
+          description: Bad request, invalid input data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid data."
+                  success:
+                    type: boolean
+                    example: false
+        404:
+          description: Blog not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Blog not found."
+                  success:
+                    type: boolean
+                    example: false
+
+      /blog/{id}:
+    delete:
+      summary: Delete a blog by ID
+      description: Deletes the blog specified by the ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the blog to delete.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Successfully deleted the blog.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Blog deleted successfully."
+                  success:
+                    type: boolean
+                    example: true
+        404:
+          description: Blog not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Blog not found."
+                  success:
+                    type: boolean
+                    example: false
+
+  /user/profile:
+    put:
+      summary: Update user profile
+      description: Updates the user's profile with name, email, and profile picture.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the user.
+                  example: "John Doe"
+                email:
+                  type: string
+                  description: The email of the user.
+                  example: "john.doe@example.com"
+                profilePic:
+                  type: string
+                  format: uri
+                  description: The URL of the user's profile picture.
+                  example: "http://example.com/profile-pic.jpg"
+      responses:
+        200:
+          description: Successfully updated the profile.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile updated successfully."
+                  success:
+                    type: boolean
+                    example: true
+        400:
+          description: Invalid data provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid data."
+                  success:
+                    type: boolean
+                    example: false
+  /auth/check:
+    put:
+      summary: Get Auth User Data
+      description: Fetching the auth user's profile with name, email, and profile picture.
+      responses:
+        200:
+          description: Successfully fetched user profile.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile updated successfully."
+                  success:
+                    type: boolean
+                    example: true
+        401:
+          description: User not authenticated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid data."
+                  success:
+                    type: boolean
+                    example: false

@@ -30,6 +30,10 @@ export default function FormDialog({ update }) {
         title: yup
             .string()
             .required('Title is required'),
+        content: yup
+            .string()
+            .required('Content is required')
+            .min(50, 'Content must be at least 50 characters long'),
         file: yup
             .mixed()
             .required('File is required')
@@ -135,7 +139,7 @@ export default function FormDialog({ update }) {
                                     }
                                     style={{ marginTop: '16px', marginBottom: '8px' }}
                                 />
-                                <ErrorMessage name="file" component="p"   style={{ color: 'gray', marginBottom: '1px' }} />
+                                <ErrorMessage name="file" component="p" style={{ color: 'gray', marginBottom: '1px' }} />
                                 <DialogActions>
                                     <Button
                                         type="submit"

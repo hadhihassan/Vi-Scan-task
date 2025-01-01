@@ -36,11 +36,12 @@ function LoginPage() {
       navigate("/")
 
     } catch (error) {
-      if (error.response.data.errors) {
+      if (error.response?.data?.errors) {
         toast.error(error?.response?.data?.errors[0]?.msg)
       } else {
         toast.error(error?.response?.data?.message)
       }
+      
     }
 
     setSubmitting(false);
@@ -109,7 +110,7 @@ function LoginPage() {
                 {isSubmitting ? 'Signing In...' : 'Sign In'}
               </Button>
               <Typography variant="subtitle2" align="center" margin={1} color="gray" gutterBottom>
-                Don't have accound .
+                Don&apos;t have accound .
                 <Link to={'/signup'}>
                   Sign Up?
                 </Link>

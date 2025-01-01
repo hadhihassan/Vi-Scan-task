@@ -24,14 +24,7 @@ router.put(
         editBlog(req, res, next)
     }
 );
-//  Update Blog poster
-router.patch(
-    "/:id",
-    protectRoute,
-    (req, res, next) => {
-        updatePoster(req, res, next)
-    }
-);
+
 //  Delete blogs
 router.delete(
     "/:id",

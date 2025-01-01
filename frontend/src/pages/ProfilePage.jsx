@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-import { Box, Stack, Typography, Button } from '@mui/material';
+import { Box, Stack, Typography, Button, Skeleton, Pagination } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -37,30 +37,35 @@ function ProfilePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { authUser } = useContext(AuthContext);
-  const [src, setSrc] = useState(authUser.profilePic);
+  const [loading, setLoading] = useState(false);
 
-  const navigate= useNavigate()
+  const navigate = useNavigate()
 
   const handleFetchBlogs = async (page = 1) => {
+    setLoading(false)
     try {
       const response = await getMyBlogs(page, 10);
 
       setBlogs(response.blogs);
       setTotalPages(response.totalPages);
 
+      setLoading(true)
     } catch (error) {
       if (error.response?.data?.errors) {
         toast.error(error.response.data.errors[0]?.msg);
       } else {
         toast.error(error.response?.data?.message || "An error occurred.");
       }
+      setLoading(true)
+    } finally {
+      setLoading(true)
     }
   };
 
-  // const handlePageChange = (event, value) => {
-  //   setCurrentPage(value);
-  //   handleFetchBlogs(value);
-  // };
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+    handleFetchBlogs(value);
+  };
 
   useEffect(() => {
     handleFetchBlogs(currentPage);
@@ -105,16 +110,16 @@ function ProfilePage() {
               <Typography textAlign="center" variant='subtitle2'>
                 Total Post:{blogs?.length}
               </Typography>
-              <UpdateProfileForm  userData={authUser}/>
+              <UpdateProfileForm userData={authUser} />
             </Box>
           </Item>
         </Grid>
         <Grid size={{ md: 8, sm: 12, xs: 12 }} >
-          <Grid container spacing={{ xs: 2, md: 2 }} columns={{ xs: 2, sm: 8, md: 12 }}>
+          <Grid sx={{ display: 'flex', flexDirection: "row" }} container spacing={{ xs: 2, md: 2 }} columns={{ xs: 2, sm: 8, md: 12 }}>
             {blogs?.map((blog, index) => (
               <Grid key={index} size={{ xs: 2, sm: 4, md: 4 }}>
                 <Card sx={{ minHeight: 350, maxWidth: 500, maxHeight: 400 }}>
-                  <CardActionArea onClick={()=>navigate(`/blog/${blog.id}`)}>
+                  <CardActionArea onClick={() => navigate(`/blog/${blog.id}`)}>
                     <CardMedia
                       component="img"
                       height="140"
@@ -142,8 +147,38 @@ function ProfilePage() {
                 </Box>
               </Grid>
             ))}
+
+            {!blogs && "No Post"}
+            {!loading && (Array.from(new Array(10))).map((item, index) => (
+              <Grid key={index} size={{ xs: 2, sm: 4, md: 4 }}>
+                <Card sx={{ minHeight: 350, maxWidth: 500, maxHeight: 400 }}>
+                  <Box key={index} sx={{ minHeight: 350, maxWidth: 500, maxHeight: 500 }}>
+                    <Skeleton variant="rectangular" width={350} height={250} />
+                    <Box sx={{ pt: 0.5 }}>
+                      <Skeleton />
+                      <Skeleton width="60%" />
+                    </Box>
+                  </Box>
+                </Card>
+              </Grid>
+            ))
+            }
           </Grid>
+          {
+            blogs && <Stack
+              spacing={2}
+              sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}
+            >
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={handlePageChange}
+                color="primary"
+              />
+            </Stack>
+          }
         </Grid>
+
       </Grid>
     </Container>
   </>)
