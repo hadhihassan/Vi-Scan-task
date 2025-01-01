@@ -12,4 +12,4 @@ cloudinary.config({
 
 export default cloudinary;
 
-export const uploadImage = await cloudinary.uploader.upload(poster);
+export const uploadImage = async (poster) => await cloudinary.uploader.upload(poster);
