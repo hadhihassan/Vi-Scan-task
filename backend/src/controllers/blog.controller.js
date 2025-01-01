@@ -1,4 +1,4 @@
-import cloudinary from "../lib/cloudinary.js";
+import cloudinary, { uploadImage } from "../lib/cloudinary.js";
 import { prisma } from "../lib/db.js";
 import { asyncErrorHandler } from "../utils/asynHandler.js";
 
@@ -15,7 +15,7 @@ export const createNewBlog = asyncErrorHandler(async (req, res) => {
     }
 
 
-    const uploadResponse = await cloudinary.uploader.upload(poster);
+    const uploadResponse = await uploadImage(poster);
     const blog = await prisma.blog.create({
         data: {
             title,
@@ -131,7 +131,7 @@ export const updatePoster = async (req, res) => {
             return res.status(400).json({ message: "Profile pic is required" });
         }
 
-        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+        const uploadResponse = await uploadImage(profilePic);
         const updatedUser = await prisma.blog.update({
             where: { id },
             data: { profilePic: uploadResponse.secure_url },
@@ -150,7 +150,7 @@ export const editBlog = asyncErrorHandler(async (req, res) => {
     let { title, content, poster } = req.body.data
 
     if (poster) {
-        poster = (await cloudinary.uploader.upload(poster)).secure_url;
+        poster = (await uploadImage(poster)).secure_url;
     }
 
     const exisintData = await prisma.blog.findFirst({

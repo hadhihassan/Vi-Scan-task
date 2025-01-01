@@ -5,7 +5,7 @@ import { verifyJwt } from '../lib/jwt.js';
 export const protectRoute = async (req, res, next) => {
     try {
         const token = req.headers.authorization
-        console.log(token,"here")
+        
         if (!token) {
             return res.status(401).json({
                 message: "Unauthorized user Access. No token provided."

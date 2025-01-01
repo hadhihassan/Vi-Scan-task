@@ -1,4 +1,4 @@
-import cloudinary from "../lib/cloudinary.js";
+import cloudinary, { uploadImage } from "../lib/cloudinary.js";
 import { prisma } from "../lib/db.js";
 
 export const updateProfilePic = async (req, res) => {
@@ -10,7 +10,7 @@ export const updateProfilePic = async (req, res) => {
             return res.status(400).json({ message: "Profile pic is required" });
         }
 
-        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+        const uploadResponse = await uploadImage(profilePic);
         const updatedUser = await prisma.user.update({
             where: { id: userId },
             data: { profilePic: uploadResponse.secure_url },
@@ -31,7 +31,7 @@ export const updateProfile = async (req, res) => {
         if (!profilePic) {
             return res.status(400).json({ message: "Profile pic is required" });
         } else {
-            profilePic = (await cloudinary.uploader.upload(profilePic)).secure_url;
+            profilePic = (await uploadImage(profilePic)).secure_url;
         }
         console.log(name, email, userId, profilePic);
 

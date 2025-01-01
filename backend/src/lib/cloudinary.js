@@ -11,3 +11,5 @@ cloudinary.config({
 })
 
 export default cloudinary;
+
+export const uploadImage = await cloudinary.uploader.upload(poster);
