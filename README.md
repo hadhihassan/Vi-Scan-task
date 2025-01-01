@@ -64,7 +64,7 @@ The project follows a clean structure for maintainability:
 
 1. **Clone the Repository**:
     ```bash
-    git clone (https://github.com/hadhihassan/Vi-Scan-task)
+    git clone https://github.com/hadhihassan/Vi-Scan-task
     ```
 
 2. **Setup Back-End**:
@@ -108,6 +108,6 @@ The project follows a clean structure for maintainability:
     ```
 
 8. **Access the Application**:
-    Open your browser at `https://vi-scan-task-myg5.vercel.app/`.
+    Open your browser at `https://localhost:5172/`.
 
 ---
