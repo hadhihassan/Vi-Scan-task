@@ -27,7 +27,7 @@ app.use('/api/blog', blogRoutes)
 app.use('/api/profile', profileRoutes)
 
 app.use(errorHandler);
-
+console.log(process.env.DATABASE_URL)
 app.listen(PORT, () => {
     console.log("Server is runing on", PORT);
     connectToDatabase()
