@@ -102,11 +102,12 @@ export const getMyBlogs = asyncErrorHandler(async (req, res) => {
 export const getBlog = asyncErrorHandler(async (req, res) => {
 
     const id = req.params.id
-   
+
     const blog = await prisma.blog.findUnique({
         where: {
             id: +id
-        }
+        },
+        include: { author: true }
     })
     if (!blog) {
         return res.status(500).json({

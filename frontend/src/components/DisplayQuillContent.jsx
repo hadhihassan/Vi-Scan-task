@@ -1,10 +1,10 @@
 import { Typography } from "@mui/material";
 import DOMPurify from "dompurify";
 
-const DisplayQuillContent = ({ content }) => {
-    
+const DisplayQuillContent = ({ content, viewPage = false }) => {
+
     const limitedContent = content?.slice(0, 100);
-    const sanitizedContent = DOMPurify.sanitize(limitedContent);
+    const sanitizedContent = DOMPurify.sanitize(viewPage ? content : limitedContent);
 
     return (
         <Typography

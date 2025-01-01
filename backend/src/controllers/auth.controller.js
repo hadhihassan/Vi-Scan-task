@@ -51,19 +51,20 @@ export const login = async (req, res) => {
             message: "Invalid Credentials"
         })
     }
-    console.log(user," this is the user ================")
-    generateJwtToken(user.id, res);
-
+ 
+    const token = await generateJwtToken(user.id, res);
+    console.log(token)
     res.status(200).json({
         name: user.name,
         email: user.email,
+        token
     })
 }
 
 export const logout = (req, res) => {
     res.cookie("jwt", "", { maxAge: 0 })
     res.status(200).json({
-        message: "Logged our successfully"
+        message: "Loggout our successfully"
     })
 }
 

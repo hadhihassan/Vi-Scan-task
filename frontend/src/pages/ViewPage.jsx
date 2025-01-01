@@ -12,9 +12,9 @@ import toast from 'react-hot-toast'
 import { getBlog } from '../services/blogService';
 import DisplayQuillContent from '../components/DisplayQuillContent';
 import { useParams } from 'react-router-dom';
+import moment from 'moment';
 
 function ViewPage() {
-
     const [blog, setBlog] = useState(null)
     const { id } = useParams();
 
@@ -36,19 +36,37 @@ function ViewPage() {
     return (<>
         <CssBaseline />
         <Container maxWidth="lg" sx={{
-            // display: 'flex',
-            // justifyItems: "center",
-            // alignItems: "center",
             height: "87vh"
         }}
         >
-            <Typography sx={{
-                marginTop: '40px',
-                marginBottom: '40px',
-            }} gutterBottom variant="h5" component="div">
-                {blog?.title}
-            </Typography>
-            <Box sx={{ flexGrow: 1, height: '400px', borderColor: "gray" }}>
+            <Card sx={{ display: 'flex', marginTop: "50px" }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: "center", flexDirection: 'row' }}>
+                    <CardMedia
+                        component="img"
+                        sx={{ width: 80, height: 80, borderRadius: "50%", borderColor: "red" }}
+                        image={blog?.author.profilePic}
+                        alt="Live from space album cover"
+                    />
+                    <CardContent sx={{ flex: '1 0 auto' }}>
+                        <Typography component="div" variant="h5">
+                            {blog?.title}
+                        </Typography>
+                        <Typography
+                            variant="subtitle1"
+                            component="div"
+                            sx={{ color: 'text.secondary' }}
+                        >
+                            {blog?.author.name}
+                        </Typography>
+                        <Typography variant="subtitle2"
+                            component="div"
+                            sx={{ color: 'text.secondary' }}>
+                            Published On {moment(blog?.createdAt).format('MMM D, YYYY')}
+                        </Typography>
+                    </CardContent>
+                </Box>
+            </Card>
+            <Box sx={{ flexGrow: 1, height: '400px', borderColor: "gray", marginTop: "10px" }}>
                 <Card>
                     <CardActionArea sx={{ display: 'flex', flexDirection: 'row', }}>
                         <CardMedia
@@ -67,7 +85,7 @@ function ViewPage() {
                             <Typography gutterBottom variant="h5" component="div">
                                 {blog?.title}
                             </Typography>
-                            < DisplayQuillContent content={blog?.content} />
+                            < DisplayQuillContent content={blog?.content} viewPage={true} />
                         </CardContent>
                     </CardActions>
                 </Card>

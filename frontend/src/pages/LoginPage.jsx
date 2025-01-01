@@ -28,7 +28,9 @@ function LoginPage() {
 
   const handleLoginin = async (values, { setSubmitting }) => {
     try {
-      await login(values)
+      const res = await login(values)
+      localStorage.setItem('token', res.token)
+      console.log(res)
       updateAuthenticity()
       toast.success('Sign-in successful!');
       navigate("/")
@@ -114,7 +116,6 @@ function LoginPage() {
               </Typography>
             </Form>
           )}
-
         </Formik>
       </Box>
     </AppProvider>
