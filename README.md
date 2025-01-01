@@ -40,8 +40,8 @@ The **Blog Application** is a full-stack project designed to manage blogs effici
   - BlogPost table with relationships and constraints for posts.
 
 ### Hosting
-- Hosted on: [Render/Vercel/Cyclic] (choose one based on your hosting).
-- Live Application Link: [(https://vi-scan-task-myg5.vercel.app/)].
+- Hosted on: Render and Vercel.
+- Live Application Link: https://vi-scan-task-myg5.vercel.app.
 
 ---
 
