@@ -45,6 +45,12 @@ The **Blog Application** is a full-stack project designed to manage blogs effici
 
 ---
 
+### API Documentaion
+- API Documentaion using swagger.
+- Link :https://vi-scan-task.onrender.com/api-docs.
+
+---
+
 ## Project Structure
 
 The project follows a clean structure for maintainability:
