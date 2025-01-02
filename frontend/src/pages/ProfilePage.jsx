@@ -148,7 +148,7 @@ function ProfilePage() {
               </Grid>
             ))}
 
-            {!blogs && "No Post"}
+            {!blogs?.length && "No Post"}
             {!loading && (Array.from(new Array(10))).map((item, index) => (
               <Grid key={index} size={{ xs: 2, sm: 4, md: 4 }}>
                 <Card sx={{ minHeight: 350, maxWidth: 500, maxHeight: 400 }}>
@@ -164,8 +164,9 @@ function ProfilePage() {
             ))
             }
           </Grid>
+
           {
-            blogs && <Stack
+            blogs?.length !== 0 && <Stack
               spacing={2}
               sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}
             >
