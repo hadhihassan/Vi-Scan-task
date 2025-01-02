@@ -77,7 +77,7 @@ const UpdateProfileForm = ({ userData }) => {
             });
         }
         try {
-            const loadingToastId = toast.loading("Updating blog, please wait...");
+            const loadingToastId = toast.loading("Updating profile, please wait...");
 
             await updateProfile({
                 name: values.name,
@@ -86,7 +86,7 @@ const UpdateProfileForm = ({ userData }) => {
             });
 
             toast.dismiss(loadingToastId);
-            toast.success("Blog updating successfully!");
+            toast.success("Profile updating successfully!");
 
         } catch (error) {
             toast.dismiss();

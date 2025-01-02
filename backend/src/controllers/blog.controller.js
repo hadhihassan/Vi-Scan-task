@@ -77,6 +77,7 @@ export const getMyBlogs = asyncErrorHandler(async (req, res) => {
 
     const [blogs, totalBlogs] = await Promise.all([
         prisma.blog.findMany({
+            where: { authorId: userId },
             skip: parseInt(skip, 10),
             take: parseInt(limit, 10),
         }),
